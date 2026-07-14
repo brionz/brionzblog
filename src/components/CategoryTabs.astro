@@ -1,0 +1,125 @@
+---
+import { brand, type CategorySlug } from '../config/brand';
+import { categoryHref } from '../lib/editorial';
+
+interface Props {
+	active?: CategorySlug;
+	edge?: boolean;
+}
+
+const { active, edge = false } = Astro.props;
+---
+
+<nav class:list={['category-tabs', { edge }]} aria-label="Kategori esai">
+	<a
+		class:list={{ active: !active }}
+		href="/blog"
+		aria-current={!active ? 'page' : undefined}
+	>
+		Semua
+	</a>
+	{
+		brand.categories.map((category, index) => (
+			<a
+				class:list={{ active: active === category.slug }}
+				href={categoryHref(category.slug)}
+				aria-current={active === category.slug ? 'page' : undefined}
+				style={`--tab-color: ${category.color}; --tab-index: ${index}`}
+			>
+				{category.label}
+			</a>
+		))
+	}
+</nav>
+
+<style>
+	.category-tabs {
+		display: flex;
+		gap: 0.55rem;
+		margin-block: 1.5rem 3rem;
+		overflow-x: auto;
+		scroll-snap-type: x proximity;
+		scrollbar-width: none;
+	}
+
+	.category-tabs::-webkit-scrollbar {
+		display: none;
+	}
+
+	.category-tabs a {
+		--tab-color: var(--color-field);
+		min-height: 44px;
+		flex: 0 0 auto;
+		display: inline-flex;
+		align-items: center;
+		padding: 0.65rem 1rem;
+		background: var(--tab-color);
+		border: 1px solid color-mix(in oklch, var(--color-ink) 14%, var(--tab-color));
+		border-radius: 999px;
+		font-family: var(--font-utility), ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-decoration: none;
+		text-transform: uppercase;
+		scroll-snap-align: start;
+		transition: transform 280ms var(--ease-out);
+	}
+
+	.category-tabs a:first-child {
+		--tab-color: var(--color-paper);
+	}
+
+	.category-tabs a:hover,
+	.category-tabs a.active {
+		transform: translateY(-0.22rem);
+	}
+
+	.category-tabs.edge {
+		position: fixed;
+		z-index: 35;
+		right: 0;
+		top: 36vh;
+		margin: 0;
+		display: grid;
+		justify-items: end;
+		overflow: visible;
+	}
+
+	.category-tabs.edge a:first-child {
+		display: none;
+	}
+
+	.category-tabs.edge a {
+		min-width: 7.4rem;
+		border-right: 0;
+		border-radius: 999px 0 0 999px;
+		transform: translateX(1.35rem);
+	}
+
+	.category-tabs.edge a:hover,
+	.category-tabs.edge a.active {
+		transform: translateX(0);
+	}
+
+	@media (max-width: 720px) {
+		.category-tabs.edge {
+			position: static;
+			display: flex;
+			justify-items: initial;
+			margin-block: 0 2rem;
+			overflow-x: auto;
+		}
+
+		.category-tabs.edge a:first-child {
+			display: inline-flex;
+		}
+
+		.category-tabs.edge a {
+			min-width: auto;
+			border-right: 1px solid color-mix(in oklch, var(--color-ink) 14%, var(--tab-color));
+			border-radius: 999px;
+			transform: none;
+		}
+	}
+</style>

@@ -1,0 +1,279 @@
+---
+import { getCollection } from 'astro:content';
+import CategoryTabs from '../components/CategoryTabs.astro';
+import EssayCard from '../components/EssayCard.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { brand } from '../config/brand';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const featured =
+	posts.find((post) => post.data.featured) ?? posts[0];
+const more = posts.filter((post) => post.id !== featured?.id).slice(0, 4);
+---
+
+<SiteLayout wide>
+	<section class="hero" aria-labelledby="hero-title">
+		<div class="hero-field" aria-hidden="true"></div>
+		<CategoryTabs edge />
+
+		<div class="hero-inner">
+			<p class="utility-label hero-eyebrow">{brand.home.eyebrow}</p>
+			<h1 id="hero-title" class="hero-title">
+				Bacaan untuk <em>kepala yang ramai.</em>
+			</h1>
+			<p class="hero-deck">{brand.home.deck}</p>
+			<a class="hero-cta" href={brand.home.ctaHref}>
+				{brand.home.ctaLabel}
+				<span aria-hidden="true">→</span>
+			</a>
+			<div class="hero-index" aria-hidden="true"></div>
+			<p class="utility-label hero-issue">
+				Edisi terbaru — {brand.issue.date}
+			</p>
+		</div>
+	</section>
+
+	{
+		featured && (
+			<section class="editor-pick" id="pilihan-editor" aria-labelledby="editor-pick-heading">
+				<div class="section-head">
+					<p class="utility-label" id="editor-pick-heading">Pilihan editor</p>
+					<h2>Mulai dari sini</h2>
+				</div>
+				<EssayCard post={featured} variant="feature" />
+			</section>
+		)
+	}
+
+	<section class="category-atlas" aria-labelledby="atlas-heading">
+		<div class="section-head">
+			<p class="utility-label" id="atlas-heading">Peta bacaan</p>
+			<h2>Tiga lorong, satu perpustakaan</h2>
+		</div>
+		<div class="atlas-grid">
+			{
+				brand.categories.map((category) => {
+					const count = posts.filter((post) => post.data.category === category.slug).length;
+					return (
+						<a
+							class="atlas-card"
+							href={`/blog/category/${category.slug}/`}
+							style={`--card-color: ${category.color}`}
+						>
+							<span class="utility-label">{count} esai</span>
+							<h3>{category.label}</h3>
+							<p>{category.description}</p>
+						</a>
+					);
+				})
+			}
+		</div>
+	</section>
+
+	{
+		more.length > 0 && (
+			<section class="recent" aria-labelledby="recent-heading">
+				<div class="section-head section-head--split">
+					<div>
+						<p class="utility-label" id="recent-heading">Arsip terbaru</p>
+						<h2>Baru ditambahkan</h2>
+					</div>
+					<a class="recent-all" href="/blog">
+						Semua esai <span aria-hidden="true">→</span>
+					</a>
+				</div>
+				<div class="recent-list">
+					{more.map((post) => (
+						<EssayCard post={post} variant="compact" />
+					))}
+				</div>
+			</section>
+		)
+	}
+</SiteLayout>
+
+<style>
+	.hero {
+		position: relative;
+		min-height: min(88vh, 52rem);
+		display: grid;
+		align-items: end;
+		padding: clamp(3rem, 8vw, 6rem) 0 clamp(2.5rem, 5vw, 4rem);
+		margin-inline: calc(50% - 50vw);
+		padding-inline: max(1rem, calc((100vw - var(--wide)) / 2));
+		overflow: clip;
+	}
+
+	.hero-field {
+		position: absolute;
+		inset: 0;
+		background:
+			radial-gradient(circle at 12% 18%, color-mix(in oklch, var(--color-citron) 55%, transparent), transparent 28%),
+			radial-gradient(circle at 88% 12%, color-mix(in oklch, var(--color-coral) 40%, transparent), transparent 24%),
+			linear-gradient(155deg, var(--color-field) 0%, color-mix(in oklch, var(--color-field) 70%, var(--color-paper)) 58%, var(--color-paper) 100%);
+	}
+
+	.hero-inner {
+		position: relative;
+		max-width: 40rem;
+		z-index: 2;
+	}
+
+	.hero-eyebrow {
+		margin: 0 0 1.25rem;
+		color: var(--color-muted);
+	}
+
+	.hero-title {
+		margin: 0 0 1rem;
+		font-size: clamp(3.2rem, 11vw, 7.5rem);
+		line-height: 0.92;
+		letter-spacing: -0.06em;
+	}
+
+	.hero-title em {
+		font-style: italic;
+		color: color-mix(in oklch, var(--color-ink) 72%, var(--color-coral));
+	}
+
+	.hero-deck {
+		margin: 0 0 1.75rem;
+		max-width: 36ch;
+		color: var(--color-muted);
+		font-size: clamp(1.05rem, 2vw, 1.2rem);
+		line-height: 1.6;
+	}
+
+	.hero-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		min-height: 44px;
+		padding: 0.85rem 1.35rem;
+		background: var(--color-ink);
+		color: var(--color-paper);
+		border-radius: 999px;
+		font-family: var(--font-utility), ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-decoration: none;
+		text-transform: uppercase;
+		transition:
+			transform 280ms var(--ease-out),
+			background 220ms var(--ease-out);
+	}
+
+	.hero-cta:hover {
+		background: var(--color-coral);
+		transform: translateY(-2px);
+	}
+
+	.hero-index {
+		height: 1px;
+		margin: 2.5rem 0 1rem;
+		background: color-mix(in oklch, var(--color-ink) 22%, var(--color-field));
+	}
+
+	.hero-issue {
+		margin: 0;
+		color: var(--color-muted);
+	}
+
+	.section-head {
+		margin-bottom: 2rem;
+	}
+
+	.section-head h2 {
+		margin-top: 0.55rem;
+		font-size: clamp(2rem, 4vw, 3.2rem);
+	}
+
+	.section-head--split {
+		display: flex;
+		align-items: end;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.editor-pick,
+	.category-atlas,
+	.recent {
+		padding: clamp(3rem, 6vw, 5rem) 0;
+	}
+
+	.editor-pick {
+		padding-top: clamp(2rem, 4vw, 3rem);
+	}
+
+	.atlas-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	.atlas-card {
+		--card-color: var(--color-field);
+		min-height: 14rem;
+		display: grid;
+		align-content: end;
+		gap: 0.65rem;
+		padding: 1.35rem;
+		text-decoration: none;
+		color: inherit;
+		background: color-mix(in oklch, var(--card-color) 58%, var(--color-paper));
+		border: 1px solid color-mix(in oklch, var(--color-ink) 10%, var(--card-color));
+		border-radius: var(--radius-card);
+		transition: transform 280ms var(--ease-out);
+	}
+
+	.atlas-card:hover {
+		transform: translateY(-4px) rotate(-0.4deg);
+	}
+
+	.atlas-card h3 {
+		font-size: clamp(1.8rem, 3vw, 2.4rem);
+	}
+
+	.atlas-card p {
+		margin: 0;
+		color: var(--color-muted);
+		font-size: 0.98rem;
+		line-height: 1.5;
+	}
+
+	.recent-all {
+		font-family: var(--font-utility), ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-decoration: none;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	.recent-list {
+		display: grid;
+	}
+
+	@media (max-width: 900px) {
+		.atlas-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 720px) {
+		.hero {
+			min-height: auto;
+			margin-inline: 0;
+			padding-inline: 0;
+		}
+
+		.section-head--split {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+</style>

@@ -1,0 +1,22 @@
+---
+import { brand } from '../config/brand';
+---
+
+<span class="issue-badge">
+	<span>{brand.issue.label}</span>
+	<span aria-hidden="true">/</span>
+	<span>{brand.issue.date}</span>
+</span>
+
+<style>
+	.issue-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-family: var(--font-utility), ui-monospace, monospace;
+		font-size: 0.68rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+</style>

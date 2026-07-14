@@ -1,0 +1,88 @@
+---
+import { getCollection } from 'astro:content';
+import CategoryTabs from '../../../components/CategoryTabs.astro';
+import EssayCard from '../../../components/EssayCard.astro';
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import { brand, type CategorySlug } from '../../../config/brand';
+import { getCategory } from '../../../lib/editorial';
+
+export async function getStaticPaths() {
+	return brand.categories.map((category) => ({
+		params: { slug: category.slug },
+	}));
+}
+
+const { slug } = Astro.params as { slug: CategorySlug };
+const category = getCategory(slug);
+
+if (!category) {
+	return Astro.redirect('/blog');
+}
+
+const posts = (await getCollection('blog'))
+	.filter((post) => post.data.category === slug)
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const [lead, ...rest] = posts;
+---
+
+<SiteLayout
+	title={`Esai ${category.label}`}
+	description={category.description}
+	wide
+>
+	<header class="page-intro">
+		<p class="utility-label">Kategori</p>
+		<h1>{category.label}</h1>
+		<p class="page-deck">{category.description}</p>
+	</header>
+
+	<CategoryTabs active={slug} />
+
+	<section aria-label={`Esai kategori ${category.label}`}>
+		{
+			posts.length === 0 ? (
+				<p class="empty">Belum ada esai di kategori ini.</p>
+			) : (
+				<>
+					{lead && <EssayCard post={lead} variant="feature" />}
+					<div class="archive-list">
+						{rest.map((post) => <EssayCard post={post} variant="compact" />)}
+					</div>
+				</>
+			)
+		}
+	</section>
+</SiteLayout>
+
+<style>
+	.page-intro {
+		padding: clamp(2.5rem, 5vw, 4rem) 0 1rem;
+		max-width: 38rem;
+	}
+
+	.page-intro h1 {
+		margin: 0.55rem 0 0.75rem;
+		font-size: clamp(2.8rem, 7vw, 5rem);
+	}
+
+	.page-deck {
+		margin: 0;
+		color: var(--color-muted);
+		font-size: 1.08rem;
+		line-height: 1.55;
+	}
+
+	.archive-list {
+		display: grid;
+		margin-top: 2rem;
+		padding-bottom: 2rem;
+	}
+
+	.empty {
+		margin: 2rem 0 4rem;
+		padding: 2rem;
+		color: var(--color-muted);
+		background: color-mix(in oklch, var(--color-field) 45%, var(--color-paper));
+		border-radius: var(--radius-card);
+	}
+</style>

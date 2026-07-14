@@ -1,0 +1,170 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+import SiteLayout from './SiteLayout.astro';
+import { brand } from '../config/brand';
+import { calculateReadingMinutes, categoryHref, getCategory } from '../lib/editorial';
+
+interface Props {
+	post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { data, body } = post;
+const { title, description, pubDate, updatedDate, heroImage, category } = data;
+const categoryMeta = getCategory(category);
+const readingMinutes = calculateReadingMinutes(body ?? '');
+---
+
+<SiteLayout
+	title={title}
+	description={description}
+	image={heroImage}
+	type="article"
+	publishedTime={pubDate}
+	wide
+>
+	<article class="article">
+		<header class="article-header">
+			<p class="utility-label article-kicker">
+				<a href={categoryHref(category)}>{categoryMeta?.label}</a>
+				<span aria-hidden="true">·</span>
+				<FormattedDate date={pubDate} />
+				<span aria-hidden="true">·</span>
+				<span>{readingMinutes} menit baca</span>
+			</p>
+			<h1>{title}</h1>
+			<p class="article-desc">{description}</p>
+			{
+				updatedDate && (
+					<p class="article-updated">
+						Diperbarui <FormattedDate date={updatedDate} />
+					</p>
+				)
+			}
+		</header>
+
+		{
+			heroImage ? (
+				<figure class="article-hero">
+					<Image width={1400} height={700} src={heroImage} alt="" />
+				</figure>
+			) : (
+				<div
+					class="article-fallback"
+					style={`--category-color: ${categoryMeta?.color}`}
+					aria-hidden="true"
+				>
+					<span>{categoryMeta?.label}</span>
+					<strong>{title.trim().charAt(0).toLocaleUpperCase('id-ID')}</strong>
+				</div>
+			)
+		}
+
+		<div class="prose article-body">
+			<slot />
+		</div>
+	</article>
+</SiteLayout>
+
+<style>
+	.article-header {
+		padding: clamp(2.5rem, 5vw, 4rem) 0 1.5rem;
+		max-width: var(--content);
+		margin-inline: auto;
+	}
+
+	.article-kicker {
+		margin: 0 0 1rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.45rem;
+		color: var(--color-muted);
+	}
+
+	.article-kicker a {
+		color: var(--color-ink);
+		text-decoration: underline;
+		text-decoration-color: var(--color-coral);
+		text-decoration-thickness: 0.35em;
+		text-underline-offset: -0.12em;
+		text-decoration-skip-ink: none;
+	}
+
+	.article-header h1 {
+		margin: 0 0 0.85rem;
+		font-size: clamp(2.6rem, 7vw, 4.8rem);
+	}
+
+	.article-desc {
+		margin: 0;
+		max-width: 36ch;
+		color: var(--color-muted);
+		font-size: clamp(1.05rem, 2vw, 1.25rem);
+		line-height: 1.55;
+	}
+
+	.article-updated {
+		margin: 1rem 0 0;
+		color: var(--color-muted);
+		font-family: var(--font-utility), ui-monospace, monospace;
+		font-size: 0.68rem;
+		font-style: italic;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
+	.article-hero {
+		margin: 0 0 2.5rem;
+		overflow: hidden;
+		border-radius: var(--radius-card);
+	}
+
+	.article-hero img {
+		width: 100%;
+		aspect-ratio: 2 / 1;
+		object-fit: cover;
+	}
+
+	.article-fallback {
+		--category-color: var(--color-field);
+		min-height: 18rem;
+		margin: 0 0 2.5rem;
+		display: grid;
+		align-content: space-between;
+		padding: 1.2rem 1.4rem;
+		color: var(--color-ink);
+		background:
+			radial-gradient(circle at 72% 28%, var(--category-color) 0 16%, transparent 17%),
+			color-mix(in oklch, var(--category-color) 48%, var(--color-paper));
+		border-radius: var(--radius-card);
+	}
+
+	.article-fallback span {
+		font-family: var(--font-utility), ui-monospace, monospace;
+		font-size: 0.68rem;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.article-fallback strong {
+		justify-self: end;
+		font-family: var(--font-display), Georgia, serif;
+		font-size: clamp(8rem, 20vw, 14rem);
+		font-weight: 650;
+		line-height: 0.72;
+		letter-spacing: -0.08em;
+	}
+
+	.article-body {
+		padding-bottom: 3rem;
+	}
+
+	@media (max-width: 720px) {
+		.article-header {
+			padding-top: 2rem;
+		}
+	}
+</style>

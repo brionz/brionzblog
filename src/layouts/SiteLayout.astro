@@ -1,0 +1,59 @@
+---
+import type { ImageMetadata } from 'astro';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { brand } from '../config/brand';
+
+interface Props {
+	title?: string;
+	description?: string;
+	image?: ImageMetadata;
+	type?: 'website' | 'article';
+	publishedTime?: Date;
+	wide?: boolean;
+}
+
+const {
+	title = brand.name,
+	description = brand.description,
+	image,
+	type,
+	publishedTime,
+	wide = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={brand.locale}>
+	<head>
+		<BaseHead
+			title={title}
+			description={description}
+			image={image}
+			type={type}
+			publishedTime={publishedTime}
+		/>
+	</head>
+	<body>
+		<div class="site-shell">
+			<Header />
+			<main class:list={['site-main', { 'site-main--narrow': !wide }]}>
+				<slot />
+			</main>
+			<Footer />
+		</div>
+	</body>
+</html>
+
+<style>
+	.site-main--narrow {
+		width: min(100% - 2rem, var(--content));
+	}
+
+	@media (max-width: 720px) {
+		.site-main--narrow {
+			width: min(100% - 1.5rem, var(--content));
+		}
+	}
+</style>

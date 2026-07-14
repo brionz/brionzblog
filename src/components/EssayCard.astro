@@ -1,0 +1,205 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+import { calculateReadingMinutes, getCategory } from '../lib/editorial';
+
+export type CardVariant = 'feature' | 'standard' | 'compact';
+
+interface Props {
+	post: CollectionEntry<'blog'>;
+	variant?: CardVariant;
+}
+
+const { post, variant = 'standard' } = Astro.props;
+const category = getCategory(post.data.category);
+const readingMinutes = calculateReadingMinutes(post.body ?? '');
+const titleInitial = post.data.title.trim().charAt(0).toLocaleUpperCase('id-ID');
+---
+
+<article
+	class:list={[
+		'essay-card',
+		`essay-card--${variant}`,
+		{ 'essay-card--no-image': !post.data.heroImage },
+	]}
+	style={`--category-color: ${category?.color}`}
+>
+	<a href={`/blog/${post.id}/`}>
+		{
+			post.data.heroImage && variant !== 'compact' && (
+				<div class="essay-card__media">
+					<Image
+						src={post.data.heroImage}
+						width={variant === 'feature' ? 1200 : 720}
+						height={variant === 'feature' ? 720 : 480}
+						alt=""
+					/>
+				</div>
+			)
+		}
+		{
+			!post.data.heroImage && variant !== 'compact' && (
+				<div class="essay-card__fallback" aria-hidden="true">
+					<span class="essay-card__fallback-category">{category?.label}</span>
+					<span class="essay-card__fallback-initial">{titleInitial}</span>
+				</div>
+			)
+		}
+		<div class="essay-card__content">
+			<p class="essay-card__meta">
+				<span style={`--category-color: ${category?.color}`}>{category?.label}</span>
+				<span aria-hidden="true">·</span>
+				<FormattedDate date={post.data.pubDate} />
+				<span aria-hidden="true">·</span>
+				<span>{readingMinutes} menit baca</span>
+			</p>
+			<h2>{post.data.title}</h2>
+			{variant !== 'compact' && <p class="essay-card__description">{post.data.description}</p>}
+		</div>
+	</a>
+</article>
+
+<style>
+	.essay-card a {
+		display: grid;
+		gap: 1.1rem;
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.essay-card__media {
+		overflow: hidden;
+		background: color-mix(
+			in oklch,
+			var(--category-color, var(--color-field)) 44%,
+			var(--color-paper)
+		);
+		border-radius: var(--radius-card);
+	}
+
+	.essay-card__fallback {
+		min-height: 13rem;
+		position: relative;
+		overflow: hidden;
+		display: grid;
+		grid-template-rows: auto 1fr;
+		padding: 1rem 1.2rem 0.3rem;
+		color: var(--color-ink);
+		background:
+			radial-gradient(circle at 70% 30%, var(--category-color) 0 14%, transparent 15%),
+			color-mix(in oklch, var(--category-color) 42%, var(--color-paper));
+		border-radius: var(--radius-card);
+	}
+
+	.essay-card__fallback-category {
+		font-family: var(--font-utility), ui-monospace, monospace;
+		font-size: 0.68rem;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.essay-card__fallback-initial {
+		align-self: end;
+		justify-self: end;
+		font-family: var(--font-display), Georgia, serif;
+		font-size: clamp(7rem, 18vw, 12rem);
+		font-weight: 650;
+		line-height: 0.72;
+		letter-spacing: -0.08em;
+	}
+
+	.essay-card__media img {
+		width: 100%;
+		aspect-ratio: 3 / 2;
+		object-fit: cover;
+		transition: transform 650ms var(--ease-out);
+	}
+
+	.essay-card a:hover .essay-card__media img {
+		transform: scale(1.035);
+	}
+
+	.essay-card__meta {
+		margin: 0 0 0.6rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		color: var(--color-muted);
+		font-family: var(--font-utility), ui-monospace, monospace;
+		font-size: 0.67rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
+	.essay-card__meta > :first-child {
+		color: var(--color-ink);
+		text-decoration: underline;
+		text-decoration-color: var(--category-color);
+		text-decoration-thickness: 0.35em;
+		text-underline-offset: -0.12em;
+		text-decoration-skip-ink: none;
+	}
+
+	.essay-card h2 {
+		font-size: clamp(1.75rem, 3vw, 2.2rem);
+		line-height: 1;
+	}
+
+	.essay-card__description {
+		max-width: 42ch;
+		margin: 0.75rem 0 0;
+		color: var(--color-muted);
+	}
+
+	.essay-card--feature a {
+		grid-template-columns: minmax(0, 1.38fr) minmax(18rem, 1fr);
+		align-items: end;
+		gap: clamp(1.5rem, 4vw, 4rem);
+	}
+
+	.essay-card--feature .essay-card__fallback {
+		min-height: 24rem;
+	}
+
+	.essay-card--feature .essay-card__fallback-initial {
+		font-size: clamp(10rem, 24vw, 18rem);
+	}
+
+	.essay-card--feature h2 {
+		font-size: clamp(2.4rem, 5vw, 4.8rem);
+	}
+
+	.essay-card--feature .essay-card__media img {
+		aspect-ratio: 5 / 3;
+	}
+
+	.essay-card--compact {
+		padding-block: 1.2rem;
+		border-top: 1px solid var(--color-line);
+	}
+
+	.essay-card--compact a {
+		grid-template-columns: minmax(10rem, 0.35fr) 1fr;
+		align-items: start;
+	}
+
+	.essay-card--compact h2 {
+		font-size: clamp(1.4rem, 2.5vw, 2rem);
+	}
+
+	@media (max-width: 720px) {
+		.essay-card--feature a,
+		.essay-card--compact a {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.essay-card__media img {
+			transform: none !important;
+		}
+	}
+</style>

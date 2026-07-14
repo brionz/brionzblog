@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import CategoryTabs from '../../components/CategoryTabs.astro';
+import EssayCard from '../../components/EssayCard.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { brand } from '../../config/brand';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const [lead, ...rest] = posts;
+---
+
+<SiteLayout title="Esai" description={brand.description} wide>
+	<header class="page-intro">
+		<p class="utility-label">Arsip</p>
+		<h1>Semua esai</h1>
+		<p class="page-deck">
+			{posts.length} tulisan di {brand.name}, diurutkan dari yang terbaru.
+		</p>
+	</header>
+
+	<CategoryTabs />
+
+	<section aria-label="Daftar esai">
+		{lead && <EssayCard post={lead} variant="feature" />}
+		<div class="archive-list">
+			{rest.map((post) => <EssayCard post={post} variant="compact" />)}
+		</div>
+	</section>
+</SiteLayout>
+
+<style>
+	.page-intro {
+		padding: clamp(2.5rem, 5vw, 4rem) 0 1rem;
+		max-width: 38rem;
+	}
+
+	.page-intro h1 {
+		margin: 0.55rem 0 0.75rem;
+		font-size: clamp(2.8rem, 7vw, 5rem);
+	}
+
+	.page-deck {
+		margin: 0;
+		color: var(--color-muted);
+		font-size: 1.08rem;
+		line-height: 1.55;
+	}
+
+	.archive-list {
+		display: grid;
+		margin-top: 2rem;
+		padding-bottom: 2rem;
+	}
+</style>

@@ -1,0 +1,97 @@
+---
+import { brand } from '../config/brand';
+
+const today = new Date();
+const social = brand.social.filter((item) => item.href);
+---
+
+<footer class="site-footer">
+	<div class="footer-inner">
+		<div>
+			<p class="footer-name">{brand.name}</p>
+			<p class="footer-tag">{brand.tagline}.</p>
+		</div>
+
+		<div class="footer-meta">
+			<nav aria-label="Tautan sosial">
+				{
+					social.map((item) => (
+						<a
+							href={item.href}
+							target={item.href.startsWith('http') ? '_blank' : undefined}
+							rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+						>
+							{item.label}
+						</a>
+					))
+				}
+			</nav>
+			<p>&copy; {today.getFullYear()} {brand.author.name}. Dibuat untuk dibaca pelan.</p>
+		</div>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		margin-top: clamp(4rem, 8vw, 8rem);
+		padding: clamp(3rem, 6vw, 5rem) 0;
+		color: var(--color-ink);
+		background: var(--color-field);
+	}
+
+	.footer-inner {
+		width: min(100% - 2rem, var(--wide));
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: 1fr auto;
+		align-items: end;
+		gap: 2rem;
+	}
+
+	.footer-name {
+		margin: 0;
+		font-family: var(--font-display), Georgia, serif;
+		font-size: clamp(2.4rem, 5vw, 4.8rem);
+		font-weight: 600;
+		letter-spacing: -0.055em;
+	}
+
+	.footer-tag,
+	.footer-meta p {
+		margin: 0.4rem 0 0;
+	}
+
+	.footer-meta {
+		text-align: right;
+		font-family: var(--font-utility), ui-monospace, monospace;
+		font-size: 0.7rem;
+	}
+
+	.footer-meta nav {
+		display: flex;
+		justify-content: flex-end;
+		gap: 0.8rem;
+	}
+
+	.footer-meta a {
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+		text-transform: uppercase;
+	}
+
+	@media (max-width: 720px) {
+		.footer-inner {
+			width: min(100% - 1.25rem, var(--wide));
+			grid-template-columns: 1fr;
+		}
+
+		.footer-meta {
+			text-align: left;
+		}
+
+		.footer-meta nav {
+			justify-content: flex-start;
+		}
+	}
+</style>
