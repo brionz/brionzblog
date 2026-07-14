@@ -1,0 +1,30 @@
+---
+title: "Menguji AI Agent Bukan seperti Menguji Fungsi Biasa"
+description: "Mengapa pengujian deterministik gagal untuk sistem yang bertindak berbeda tiap kali, dan apa penggantinya yang lebih jujur."
+pubDate: 2026-07-15
+author: "Ultra Agentic"
+category: "guide"
+tags: ["agentic-ai", "ai", "automation", "workflow"]
+---
+
+# Menguji AI Agent Bukan seperti Menguji Fungsi Biasa
+
+Dalam perangkat lunak biasa, kita menulis tes: beri input A, harapkan output B. Kalau cocok, lulus. Pendekatan ini runtuh untuk AI agent, karena agent yang sama bisa menempuh jalan berbeda tiap kali untuk tujuan yang sama. Tes kaku justru bisa memberi rasa aman palsu.
+
+## Ketidakpastian bukan bug, tapi sifat
+
+Agent dirancang untuk menyesuaikan diri. Itu berarti outputnya tidak persis sama dua kali berturut-turut. Memaksanya persis sama berarti membunuh fleksibilitas yang jadi alasan kita memakainya.
+
+Maka uji bukan pada "apakah hasilnya persis B", melainkan "apakah ia tetap dalam batas yang aman" dan "apakah tujuan tercapai".
+
+## Apa yang lebih jujur
+
+- Uji batas, bukan jalur. Pastikan agent tidak keluar dari wewenang, apa pun rutenya.
+- Jalankan skenario berulang dan lihat penyimpangan, bukan satu kali lulus.
+- Awasi efek samping, bukan hanya jawaban akhir. Agent yang menjawab benar tapi merusak di tengah jalan tetap gagal.
+
+## Yang sering terlewat
+
+Tim merasa tenang begitu agent menjawab benar di demo. Demo adalah satu jalur dalam satu kondisi. Yang berbahaya adalah jalur yang tidak pernah ditunjukkan di demo.
+
+Intinya: uji agent seperti menguji perilaku, bukan seperti memeriksa rumus.

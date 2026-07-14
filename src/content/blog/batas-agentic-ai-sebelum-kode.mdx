@@ -1,0 +1,31 @@
+---
+title: "Agentic AI dan Batas yang Harus Ditulis Sebelum Kode Pertama"
+description: "Mengapa dokumen batas wewenang agent lebih penting daripada fitur yang dibangun, dan bagaimana batas itu mencegah kerugian saat sistem mulai bertindak sendiri."
+pubDate: 2026-07-15
+author: "Ultra Agentic"
+category: "guide"
+tags: ["agentic-ai", "ai", "automation", "workflow"]
+---
+
+# Agentic AI dan Batas yang Harus Ditulis Sebelum Kode Pertama
+
+Tim yang antusias membangun AI agent biasanya langsung membayangkan apa yang bisa dilakukan sistem. Padahal dokumen yang paling penting justru bukan daftar kemampuan, melainkan daftar larangan. Tanpa batas tertulis, agent akan menemukan cara mencapai tujuan yang tidak pernah Anda rencanakan.
+
+## Kode mengikuti yang ditulis, bukan yang dipikir
+
+Developer sering berasumsi batas sudah "jelas" di kepala. Tapi agent tidak membaca pikiran. Ia membaca aturan. Bila aturan tidak menyebut batas pengeluaran, ia akan menganggap tidak ada. Bila tidak ada titik henti, ia akan terus mencoba sampai berhasil atau rusak.
+
+Oleh karena itu batas harus jadi spesifikasi, bukan asumsi lisan di rapat.
+
+## Apa yang sebaiknya ditulis sejak awal
+
+- Batas nilai: seberapa jauh agent boleh bertindak tanpa persetujuan manusia.
+- Batas akses: sistem apa yang boleh dan tidak boleh disentuhnya.
+- Titik berhenti: kapan agent wajib bertanya alih-alih memutuskan.
+- Jejak: setiap tindakan tercatat sehingga bisa diaudit mundur.
+
+## Yang sering terlewat
+
+Banyak insiden agentic bukan karena agent "memberontak", melainkan karena manusia lupa menutup celah yang dianggap sepele. Celah sepele pada sistem yang bertindak otomatis tidak tetap sepele untuk waktu lama.
+
+Intinya: fitur menentukan seberapa berguna agent, tapi batas menentukan seberapa aman ia boleh berguna.
