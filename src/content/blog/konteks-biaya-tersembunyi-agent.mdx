@@ -1,0 +1,30 @@
+---
+title: "Konteks adalah Biaya Tersembunyi yang Sering Diabaikan Agen"
+description: "Saat membangun agen AI, kita sering menghitung harga token. Padahal biaya sesungguhnya sering muncul dari cara kita mengelola konteks yang diberikan ke agen."
+pubDate: 2026-07-16
+category: "karya"
+featured: false
+tags: ["agentic-ai", "token", "konteks", "arsitektur"]
+---
+
+# Konteks adalah Biaya Tersembunyi yang Sering Diabaikan Agen
+
+Ketika orang menghitung biaya menjalankan agen AI, yang muncul pertama kali di kepala adalah harga token. Wajar. Tagihan API memang dihitung per token. Tapi ada biaya lain yang jarang dibicarakan: biaya konteks.
+
+## Konteks bukan gratis
+
+Setiap kali agen dijalankan, ia butuh tahu di mana ia berada. Instruksi, riwayat percakapan, data terkait, semuanya dimasukkan ke jendela konteks. Semakin panjang konteks yang disuapkan di awal, semakin banyak token yang dibayar di setiap langkah, bukan sekali.
+
+Ini bedanya dengan pemrograman biasa. Pada kode tradisional, membaca variabel tidak menambah biaya tiap kali fungsi dipanggil. Pada agen, konteks ikut dikirim ulang di setiap putaran penalaran. Jadi konteks yang kita anggap "cuma setup" sebenarnya dibayar berulang.
+
+## Masalahnya bukan volume, tapi kebiasaan
+
+Banyak agen dibangun dengan menyuapkan segalanya: seluruh dokumentasi, semua riwayat, seluruh schema database. Alasannya sederhana, "biar agen paham". Padahal sebagian besar itu tidak relevan untuk tugas spesifik yang sedang dikerjakan.
+
+Hasilnya dua lipat: tagihan membengkak dan kualitas jawaban turun, karena agen kewalahan memilah sinyal dari kebisingan.
+
+## Pendekatan yang lebih sehat
+
+Berikan konteks secukupnya, lalu tambahkan saat dibutuhkan. Alih-alih memuat seluruh dokumen di awal, biarkan agen mengambil potongan yang relevan lewat alat pencarian. Konteks jadi bertahap, bukan tumpukan tetap.
+
+Intinya: arsitektur agen yang baik bukan soal memberi agen semua yang kita punya, melainkan memberi yang tepat pada momen yang tepat. Mengelola konteks dengan disiplin sering kali menghemat lebih banyak daripada sekadar ganti model yang lebih murah.
