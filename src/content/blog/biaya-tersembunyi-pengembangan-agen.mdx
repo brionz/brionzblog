@@ -1,0 +1,45 @@
+bun i---
+title: 'Biaya Tersembunyi dalam Pengembangan AI Agent'
+description: 'Biaya pengembangan agen AI tidak cuma token API. Ada biaya perawatan tool, pergeseran prompt, dan operasi pipeline eval yang jarang dihitung.'
+pubDate: 'Jul 26 2026'
+category: 'karya'
+featured: false
+tags:
+  - cost
+  - engineering
+  - automation
+---
+
+# Biaya Tersembunyi dalam Pengembangan AI Agent
+
+Saat tim memutuskan membangun AI agent, hitungan awalnya biasanya sederhana: biaya token API ditambah waktu developer. Hitungan itu selalu terlalu rendah karena biaya terbesar justru muncul setelah agen berjalan.
+
+## Biaya tooling yang tidak dihitung
+
+Setiap alat yang dihubungkan ke agen perlu dirawat. API berubah, skema bergeser, endpoint ditutup. Bila tool tidak diupdate, agen mulai gagal dengan cara yang membingungkan—bukan error jelas, melainkan hasil yang sedikit salah.
+
+Perawatan tool MCP sering dianggap "sekali buat, selesai." Padahal tool adalah kode yang harus diuji, dimonitor, dan diperbarui seperti kode lainnya.
+
+## Pergeseran prompt (prompt drift)
+
+Prompt yang bekerja bulan lalu belum tentu bekerja bulan ini, meskipun kode tidak berubah. Model diperbarui, perilakunya bergeser, dan prompt yang dulu menghasilkan tool call sempurna kini mulai meleset.
+
+Fenomena ini sulit dilacak karena tidak error. Agen tetap menjawab, tapi jawabannya sedikit kurang tepat. Kumpulkan selama berminggu-minggu dan kualitas sistem turun drastis tanpa ada yang bisa ditunjuk sebagai penyebab tunggal.
+
+## Operasi pipeline eval
+
+Eval suite perlu dijalankan, ditinjau, dan diperbarui. Setiap kali skenario baru ditambahkan, seseorang harus menulis fixture data, menentukan ground truth, dan memeriksa hasilnya.
+
+Ini bukan kerja sekali. Ini tugas berkelanjutan yang skalanya sebanding dengan jumlah pengguna dan variasi tugas agen.
+
+## Biaya observasi dan debugging
+
+Debugging agen lebih mahal daripada debugging kode biasa. Trajectory yang gagal bisa terdiri dari 20 langkah, dan error sebenarnya mungkin ada di langkah ke-3 tapi baru terlihat di langkah ke-17. Tanpa observability yang baik, developer bisa menghabiskan berjam-jam untuk mencari sumber masalah.
+
+Itu waktu yang tidak pernah masuk anggaran.
+
+## Yang sering terlewat
+
+Tim proyek menghitung biaya API, tapi lupa menghitung biaya manusia: waktu developer untuk maintenance, waktu domain expert untuk menulis eval, waktu operator untuk meninjau trajectory yang gagal.
+
+Biaya tersembunyi ini tidak dramatis. Ia menumpuk pelan-pelan, lalu suatu hari anggaran waktu habis tanpa hasil yang sepadan. Rencanakan sejak awal, bukan saat sudah terlambat.

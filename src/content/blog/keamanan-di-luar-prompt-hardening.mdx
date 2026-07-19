@@ -1,0 +1,50 @@
+---
+title: 'Keamanan di Luar Prompt: Teknik Hardening untuk Sistem Agen'
+description: 'Sanitasi input, validasi output, sandboxing—cara memperkuat agen AI di luar sekadar instruksi sistem yang rapi.'
+pubDate: 'Aug 02 2026'
+category: 'karya'
+featured: false
+tags:
+  - security
+  - hardening
+  - agents
+---
+
+# Keamanan di Luar Prompt: Teknik Hardening untuk Sistem Agen
+
+Banyak tim mengandalkan system prompt sebagai satu-satunya lapisan keamanan agen. "Jangan lakukan X" di prompt dianggap cukup. Padahal prompt adalah lapisan paling tipis dan paling mudah ditembus. Hardening sejati ada di luar prompt—di kode yang menjalankan agen.
+
+## Sanitasi input
+
+Setiap input yang masuk ke agen harus dianggap tidak tepercaya. Ini termasuk:
+
+- **Pesan pengguna** — bisa berisi instruksi tersembunyi
+- **Hasil tool** — bisa berisi konten berbahaya dari sumber eksternal
+- **Dokumen yang diambil** — bisa berisi prompt injection
+- **Nama file dan path** — bisa berisi traversal atau karakter khusus
+
+Sanitasi bukan berarti memfilter kata kunci. Itu tidak cukup. Sanitasi berarti memisahkan data dari instruksi secara struktural.
+
+## Validasi output
+
+Sebelum hasil agen dikirim ke tool atau ke pengguna, validasi:
+
+- Apakah output sesuai skema yang diharapkan?
+- Apakah mengandung data sensitif yang tidak seharusnya?
+- Apakah argumen tool berada dalam rentang yang diizinkan?
+- Apakah tindakan yang diminta sesuai dengan wewenang agen?
+
+Validasi output adalah jaring pengaman terakhir. Jika prompt gagal, validasi masih bisa menangkap.
+
+## Sandboxing
+
+Agen tidak boleh berjalan dengan akses penuh ke sistem. Gunakan:
+
+- **Container** untuk isolasi proses
+- **Filesystem sandbox** — agen hanya bisa membaca/menulis di direktori tertentu
+- **Network sandbox** — agen hanya bisa mencapai host yang diizinkan
+- **Credential sandbox** — agen hanya punya token dengan scope minimal
+
+## Prinsip paling penting
+
+Anggap prompt akan gagal suatu hari. Rancang sistem sehingga saat prompt gagal, kerusakan masih terbatas. Prompt adalah lapisan pertama, bukan satu-satunya. Hardening adalah lapisan yang membuat perbedaan saat lapisan pertama jebol.

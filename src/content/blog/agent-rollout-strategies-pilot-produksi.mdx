@@ -1,0 +1,52 @@
+---
+title: 'Strategi Peluncuran Agen: Dari Pilot ke Produksi'
+description: 'Peluncuran bertahap, feature flags, segmentasi pengguna—cara meluncurkan agen AI tanpa menyesal di kemudian hari.'
+pubDate: 'Aug 10 2026'
+category: 'karya'
+featured: false
+tags:
+  - deployment
+  - rollout
+  - production
+---
+
+# Strategi Peluncuran Agen: Dari Pilot ke Produksi
+
+Tim paling sering gagal bukan saat membangun agen, melainkan saat meluncurkannya. Agen yang bekerja sempurna di demo bisa hancur di produksi karena skala, variasi input, atau ekspektasi pengguna yang tidak terduga.
+
+Peluncuran bertahap adalah jawabannya. Bukan karena kurang percaya diri, melainkan karena ingin belajar sebelum semua orang terpengaruh.
+
+## Tahap 0: Internal alpha
+
+Hanya tim pengembang yang menggunakan agen. Tujuannya bukan menguji fitur, melainkan menguji kegunaan dasar: apakah agen bisa menyelesaikan tugas sederhana tanpa pengawasan penuh?
+
+Di tahap ini, setiap kegagalan adalah data berharga. Jangan perbaiki semua bug sebelum paham pola kegagalannya.
+
+## Tahap 1: Pilot terbatas
+
+Undang 10–20 pengguna nyata, idealnya yang sudah memahami risiko dan bisa memberi umpan balik terperinci. Beri mereka akses ke agen untuk tugas spesifik, bukan semua tugas.
+
+Ukur: tingkat penyelesaian, tingkat intervensi manusia, dan waktu rata-rata per tugas. Bandingkan dengan metrik sebelum agen.
+
+## Tahap 2: Ekspansi bertahap
+
+Buka akses ke lebih banyak pengguna, kelompok demi kelompok. Gunakan feature flags untuk mengontrol siapa yang melihat agen dan siapa yang belum.
+
+Jika sebuah grup menunjukkan tingkat error tinggi, mundur dan selidiki sebelum lanjut ke grup berikutnya.
+
+## Tahap 3: Produksi penuh
+
+Semua pengguna punya akses. Tapi tetap pantau metrik harian dan siapkan rencana rollback.
+
+## Indikator mundur
+
+Hentikan atau mundurkan peluncuran jika:
+
+- Tingkat penyelesaian turun di bawah 80%
+- Agen melakukan tindakan yang melanggar kebijakan
+- Biaya per tugas melebihi batas yang ditentukan
+- Umpan balik pengguna didominasi keluhan
+
+## Prinsip penutup
+
+Peluncuran bukan garis akhir. Ini awal dari siklus umpan balik yang akan menentukan apakah agen bertahan atau ditinggalkan. Rancang peluncuran untuk belajar, bukan hanya untuk mengirim.
